@@ -1,0 +1,4 @@
+export { createHandler } from '../adapters/drizzle'
+export type { ApiResponse, QueryParams, MutationParams } from '../adapters/drizzle'
+export * from '../handlers/routes/rest-routes'
+export * from '../handlers/routes/doc-routes'

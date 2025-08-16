@@ -8,32 +8,32 @@ import {
 } from '../maps/handler-maps'
 
 export function registerApiRoutes(app: any) {
-  app.get('/:table/:id', async (c: any) => {
+  app.get('/api/v1/:table/:id', async (c: any) => {
     const table = c.req.param('table');
     const handler = getByIdHandlerMap[table] || defaultGetByIdHandler;
     return handler.handle(c);
   })
-  app.get('/:table', async (c: any) => {
+  app.get('/api/v1/:table', async (c: any) => {
     const table = c.req.param('table');
     const handler = getHandlerMap[table] || defaultGetHandler;
     return handler.handle(c);
   })
-  app.post('/:table', async (c: any) => {
+  app.post('/api/v1/:table', async (c: any) => {
     const table = c.req.param('table');
     const handler = postHandlerMap[table] || defaultPostHandler;
     return handler.handle(c);
   })
-  app.put('/:table', async (c: any) => {
+  app.put('/api/v1/:table', async (c: any) => {
     const table = c.req.param('table');
     const handler = putHandlerMap[table] || defaultPutHandler;
     return handler.handle(c);
   })
-  app.patch('/:table', async (c: any) => {
+  app.patch('/api/v1/:table', async (c: any) => {
     const table = c.req.param('table');
     const handler = patchHandlerMap[table] || defaultPatchHandler;
     return handler.handle(c);
   })
-  app.delete('/:table', async (c: any) => {
+  app.delete('/api/v1/:table', async (c: any) => {
     const table = c.req.param('table');
     const handler = deleteHandlerMap[table] || defaultDeleteHandler;
     return handler.handle(c);

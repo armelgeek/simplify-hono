@@ -159,6 +159,9 @@ export function generateOpenAPISpec(options: {
         }
     }
 
+    // Helper to prefix all paths
+    const apiPrefix = '/api/v1';
+
     // Generate schemas for each table
     for (const [tableName, tableSchema] of Object.entries(schema)) {
         const properties: Record<string, any> = {}
@@ -188,14 +191,14 @@ export function generateOpenAPISpec(options: {
                 : { type, description }
         }
 
-        spec.components.schemas[tableName] = {
+    spec.components.schemas[tableName] = {
             type: 'object',
             properties,
             required,
             description: `${tableName} table schema`
         }
 
-        spec.components.schemas[`${tableName}Input`] = {
+    spec.components.schemas[`${tableName}Input`] = {
             type: 'object',
             properties,
             required,
@@ -206,7 +209,7 @@ export function generateOpenAPISpec(options: {
     // Generate paths for each table with new URL structure
     for (const [tableName] of Object.entries(schema)) {
         // GET by id path
-        spec.paths[`/${tableName}/{id}`] = {
+        spec.paths[`${apiPrefix}/${tableName}/{id}`] = {
             get: {
                 summary: `Get a single ${tableName} record by id`,
                 description: `Retrieve a single record from the ${tableName} table by id`,
@@ -327,7 +330,7 @@ export function generateOpenAPISpec(options: {
             return example;
         };
         const examplePayload = buildExamplePayload();
-        spec.paths[`/${tableName}`] = {
+    spec.paths[`${apiPrefix}/${tableName}`] = {
             delete: {
                 summary: `Delete ${tableName} records`,
                 description: `Delete records from ${tableName} table matching WHERE conditions (WHERE clause required for safety)`,
@@ -831,7 +834,7 @@ export function generateOpenAPISpec(options: {
 
     // Generate paths for custom routes
     for (const [routePath, methods] of Object.entries(customRoutes)) {
-        const pathKey = `/${routePath}`
+        const pathKey = `${apiPrefix}/${routePath}`;
 
         if (!spec.paths[pathKey]) {
             spec.paths[pathKey] = {}
