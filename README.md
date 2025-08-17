@@ -97,10 +97,20 @@ mutation.mutate({ title: 'Hello', content: 'World' })
 
 ---
 
+
 ## 🧩 Customization
 - Add new tables in `src/db/schema.ts` (Drizzle syntax)
 - Add per-table logic in `src/handlers/strategies/`
 - Add custom endpoints in `src/handlers/routes/rest-routes.ts`
+- **Exclude tables from CRUD & docs**: Pass `excludedTables` to `registerApiRoutes` and `generateOpenAPISpec` to hide tables (e.g. auth tables) from public API and OpenAPI docs.
+  
+	Example:
+	```ts
+	// src/index.ts
+	registerApiRoutes(app, { excludedTables: ['users', 'sessions', 'accounts'] })
+	// ...
+	generateOpenAPISpec({ schema, excludedTables: ['users', 'sessions', 'accounts'] })
+	```
 - OpenAPI input exclusion: only `userId` is excluded by default (see `src/adapters/openapi.ts`)
 
 ---

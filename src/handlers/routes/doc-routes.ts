@@ -1,8 +1,15 @@
-import { openapiGET } from '../../adapters/openapi-handler'
+import { getOpenapiGET } from '../../adapters/openapi-handler'
 import { apiReference } from '@scalar/hono-api-reference'
 
-export function registerDocRoutes(app: any) {
-  app.get('/swagger', () => openapiGET())
+/**
+ * Register OpenAPI/Swagger/Docs routes, with optional exclusion of tables
+ * @param app Hono app
+ * @param options { excludedTables?: string[] }
+ */
+export function registerDocRoutes(app: any, options?: { excludedTables?: string[] }) {
+  const excludedTables = options?.excludedTables || [];
+  const openapiGET = getOpenapiGET(excludedTables);
+  app.get('/swagger', () => openapiGET());
   app.get(
     '/docs',
     apiReference({

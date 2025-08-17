@@ -52,8 +52,9 @@ export function generateOpenAPISpec(options: {
         description?: string
     }
     servers?: Array<{ url: string; description: string }>
+    excludedTables?: string[]
 }): OpenAPISchema {
-    const { schema, customRoutes = {}, info = {}, servers = [] } = options
+    const { schema, customRoutes = {}, info = {}, servers = [], excludedTables = [] } = options
 
     const spec: OpenAPISchema = {
         openapi: '3.0.3',
@@ -162,8 +163,9 @@ export function generateOpenAPISpec(options: {
     // Helper to prefix all paths
     const apiPrefix = '/api/v1';
 
-    // Generate schemas for each table
+    // Generate schemas for each table (skip excluded)
     for (const [tableName, tableSchema] of Object.entries(schema)) {
+        if (excludedTables.includes(tableName)) continue;
         const properties: Record<string, any> = {}
         const required: string[] = []
 
@@ -206,8 +208,9 @@ export function generateOpenAPISpec(options: {
         }
     }
 
-    // Generate paths for each table with new URL structure
+    // Generate paths for each table with new URL structure (skip excluded)
     for (const [tableName] of Object.entries(schema)) {
+        if (excludedTables.includes(tableName)) continue;
         // GET by id path
         spec.paths[`${apiPrefix}/${tableName}/{id}`] = {
             get: {
