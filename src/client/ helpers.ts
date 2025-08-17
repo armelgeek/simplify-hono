@@ -1,10 +1,10 @@
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import type {
   ActionType,
   ExtractTables,
   OrderClause,
   SelectableColumns,
   SelectedData,
-  UpdateWhereClause,
   WhereClause,
 } from '../types'
 
@@ -167,4 +167,28 @@ function parseJson(data: Record<string, string>): Record<string, unknown> {
   }
 
   return parsed
+}
+
+/**
+ * Hook générique pour toute opération non-CRUD de type lecture (fetch, lookup, etc.) avec React Query
+ * @param queryKey - Clé unique pour le cache React Query
+ * @param operation - Fonction asynchrone à appeler (ex: API, client)
+ * @param payload - Paramètres à passer à la fonction
+ * @param options - Options React Query (enabled, staleTime, etc.)
+ * @returns { data, isLoading, error, ... }
+ *
+ * @example
+ * const { data, isLoading } = useActionQuery(['verifyOtp', otp], verifyOtp, { otp })
+ */
+export function useActionQuery<TPayload, TResult>(
+  queryKey: any[],
+  action: (payload: TPayload) => Promise<TResult>,
+  payload: TPayload,
+  options?: Omit<UseQueryOptions<TResult, unknown, TResult, any[]>, 'queryKey' | 'queryFn'>
+) {
+  return useQuery({
+    queryKey,
+    queryFn: () => action(payload),
+    ...options,
+  });
 }

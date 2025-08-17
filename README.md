@@ -153,7 +153,33 @@ const { logout, isPending } = useLogout({ authClient, onSuccess: () => { /* ... 
 
 ---
 
-### 5. File Service (Minio/S3)
+
+### 5. Helpers pour opérations non-CRUD (actions métier)
+
+#### useOperation (mutation/action)
+Pour toute opération asynchrone non-CRUD (ex : envoi de magic link, vérification, etc.) :
+```ts
+import { useOperation } from './src/client/ helpers'
+
+const { execute, pending } = useOperation(sendMagicLink, {
+	onSuccess: () => { /* ... */ },
+	onError: (err) => { /* ... */ }
+})
+// Usage : execute({ email })
+```
+
+#### useActionQuery (lecture/fetch)
+Pour toute opération de lecture non-CRUD (ex : lookup, vérification, etc.) avec React Query :
+```ts
+import { useActionQuery } from './src/client/ helpers'
+
+const { data, isLoading } = useActionQuery(['verifyOtp', otp], verifyOtp, { otp })
+// Usage : data contient le résultat de verifyOtp({ otp })
+```
+
+---
+
+### 6. File Service (Minio/S3)
 
 You can use the `ArvoxFileService` for file uploads, downloads, and signed URLs. It is fully configurable and works with any S3-compatible backend (Minio, AWS S3, etc).
 
