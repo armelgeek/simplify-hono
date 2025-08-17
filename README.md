@@ -68,18 +68,20 @@ All endpoints are prefixed with `/api/v1/`.
 
 ---
 
+
 ## 🧑‍💻 Frontend Usage
 
 ### 1. Install Peer Dependencies
 ```bash
-npm install @tanstack/react-query
+npm install @tanstack/react-query sonner
 ```
 
 ### 2. Import Hooks & Helpers
 ```ts
 import {
 	useGet, usePost, usePut, usePatch, useDelete,
-	useRecords, useRecordAction, dbQuery, dbMutation
+	useRecords, useRecordAction, dbQuery, dbMutation,
+	useLogin, useRegister, useForgotPassword, useResetPassword, useUpdateProfile, useDeleteAccount, useLogout
 } from './src/client'
 ```
 
@@ -94,6 +96,72 @@ mutation.mutate({ title: 'Hello', content: 'World' })
 
 - All hooks are typed from your backend schema.
 - All helpers return `{ success, data, ... }` for consistency.
+
+---
+
+### 4. Auth Hooks (Plug & Play)
+
+All auth hooks are decoupled and accept your `authClient` as a parameter. You can use your own auth logic or provider.
+
+#### Register (Sign Up)
+```ts
+import { useRegister } from './src/client'
+import { RegisterPayload } from './src/client/config/auth.type'
+
+const { register, isPending, error } = useRegister<RegisterPayload>(authClient, {
+	onSuccess: () => { /* navigation or toast */ },
+	onError: (err) => { /* error handling */ },
+})
+// Usage: register({ name, email, password })
+```
+
+#### Login
+```ts
+const { handleSubmit, isLoading } = useLogin({ authClient, onSuccess: () => { /* ... */ } })
+// Usage: handleSubmit({ email, password })
+```
+
+#### Forgot Password
+```ts
+const { handleForgotPassword, pending } = useForgotPassword({ authClient, redirectTo: '/reset-password', onSuccess: () => { /* ... */ } })
+// Usage: handleForgotPassword({ email })
+```
+
+#### Reset Password
+```ts
+const { handleResetPassword, pending } = useResetPassword(token, { authClient, onSuccess: () => { /* ... */ } })
+// Usage: handleResetPassword({ password })
+```
+
+#### Update Profile
+```ts
+const { updateName, updateEmail, updateAvatar, isLoading } = useUpdateProfile({ authClient })
+// Usage: updateName(name), updateEmail(email), updateAvatar(url)
+```
+
+#### Delete Account
+```ts
+const { handleDeleteAccount, isDeleting } = useDeleteAccount({ authClient, onSuccess: () => { /* ... */ } })
+// Usage: handleDeleteAccount(password)
+```
+
+#### Logout
+```ts
+const { logout, isPending } = useLogout({ authClient, onSuccess: () => { /* ... */ } })
+// Usage: logout()
+```
+
+---
+
+### 5. File Service (Minio/S3)
+
+You can use the `ArvoxFileService` for file uploads, downloads, and signed URLs. It is fully configurable and works with any S3-compatible backend (Minio, AWS S3, etc).
+
+```ts
+import { ArvoxFileService } from './src/adapters/generic-file.service'
+const fileService = new ArvoxFileService({ folder: 'uploads' })
+// fileService.upload(file), fileService.delete(id), fileService.getSignedUrl(id, ext)
+```
 
 ---
 
