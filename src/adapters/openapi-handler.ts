@@ -8,8 +8,7 @@ type OpenAPIHandlerOptions = {
     customRoutes?: Record<string, Record<string, boolean>>
     excludedTables?: string[]
 }
-
-// Factory to get openapiGET with excludedTables
+export function getOpenapiGET(excludedTablesParam: string[] = []) {
     const options: OpenAPIHandlerOptions = {
         info: {
             title: 'My Database API',
@@ -20,7 +19,7 @@ type OpenAPIHandlerOptions = {
             { url: 'http://localhost:3000', description: 'Development' },
             { url: 'https://api.myapp.com', description: 'Production' }
         ],
-        excludedTables: excludedTables
+        excludedTables: excludedTablesParam
     };
     return createOpenAPIHandler(schema, options).GET;
 }
